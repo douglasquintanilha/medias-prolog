@@ -13,25 +13,25 @@ get_weights([W1, W2, W3, W4]) :-
   weight(3,W3),
   weight(4,W4).
 
-check_status(row(_,P1,P2,P3,P4,_), Average, "Approved") :- 
+check_status(row(_,P1,P2,P3,P4,_), Average, "Aprovado") :- 
   get_weights(Ws),
   average([P1,P2,P3,P4], Ws, Average),
   Average >= 7.0.
 
-check_status(row(_,P1,P2,P3,P4,PF), Grade, "Approved") :- 
+check_status(row(_,P1,P2,P3,P4,PF), Grade, "Aprovado") :- 
   get_weights(Ws),
   average([P1,P2,P3,P4], Ws, PN),
   PN >= 4,
   Grade is (PN + PF) / 2,
   Grade >= 5.0.
 
-check_status(row(_,P1,P2,P3,P4,PF), Grade, "Not Approved") :- 
+check_status(row(_,P1,P2,P3,P4,PF), Grade, "Reprovado") :- 
   get_weights(Ws),
   average([P1,P2,P3,P4], Ws, PN),
   PN >= 4,
   Grade is (PN + PF) / 2.
 
-check_status(row(_,P1,P2,P3,P4,_), Grade, "Not Approved") :- 
+check_status(row(_,P1,P2,P3,P4,_), Grade, "Reprovado") :- 
   get_weights(Ws),
   average([P1,P2,P3,P4], Ws, Grade).
 
@@ -45,13 +45,17 @@ print_status(row(Name,_,_,_,_,_), Grade,Status) :-
   print(Status).
 
 read_weight(P,W) :-
-  write("Qual é o peso da prova "),
+  write("Qual e o peso da prova "),
   write(P),
   write(" ? "),
   read(W).
 
+read_file(File) :-
+  write("Digite nome do arquivo csv entre aspas duplas: "),
+  read(File).
+  
 main :- 
-  current_prolog_flag(argv,[File|_]),
+  read_file(File),
   csv_read_file(File, [_|T]),
   retractall(weight(_,_)),
   read_weight(1,W1), assert(weight(1,W1)),
